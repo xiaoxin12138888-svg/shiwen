@@ -8,7 +8,7 @@
 
 ## 先下载安装
 
-👉 **[点击这里下载安装包](https://github.com/xiaoxin12138888-svg/shiwen/releases/latest)**，选择 `拾文-Windows安装包.zip`。
+👉 **[点击这里下载安装包](https://github.com/xiaoxin12138888-svg/shiwen/releases/latest)**，选择 `Shiwen-Windows-Setup.zip`。
 
 1. 解压下载的压缩包。
 2. 双击里面的 `拾文-Setup-1.0.0-Windows-x64.exe`，按提示安装。
