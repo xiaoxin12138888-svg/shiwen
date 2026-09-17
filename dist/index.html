@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="collector-token" content="__TOKEN__"><title>拾文 · 公众号文章收集</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<header><div class="brand"><span class="mark">拾</span><div><strong>拾文</strong><span>公众号文章收集</span></div><span class="local">本机保存</span></div><div class="actions"><button id="importBtn">导入表格 / 网页</button><button id="sourcesBtn">管理公众号</button><button class="primary" id="collectBtn">收集文章</button></div></header>
+<main>
+<aside>
+<div class="section-title"><h2>筛选条件</h2><button class="text" id="resetBtn">重置</button></div>
+<label for="preset">已保存的方案</label><select id="preset"><option value="">选择方案</option></select>
+<label>公众号 <span class="hint">不选则显示全部</span></label><div id="accounts" class="account-list"></div>
+<label for="start">文章发布时间</label><div class="date-grid"><input type="date" id="start" aria-label="开始日期"><span>至</span><input type="date" id="end" aria-label="结束日期"></div><div class="shortcuts"><button data-days="7">近 7 天</button><button data-days="30">近 30 天</button><button data-days="0">不限日期</button></div>
+<label for="include">包含关键词</label><textarea id="include" rows="2" placeholder="即插即用，注意力"></textarea><p class="hint">多个词用逗号分隔；不区分英文大小写。</p>
+<div class="radios"><label><input type="radio" name="mode" value="any" checked>包含任意一个</label><label><input type="radio" name="mode" value="all">同时包含全部</label></div>
+<label for="exclude">排除关键词</label><input id="exclude" placeholder="课程，招聘">
+<label for="scope">匹配范围</label><select id="scope"><option value="title">仅标题</option><option value="content">标题、摘要和已收集正文</option></select>
+<label class="check"><input type="checkbox" id="original">仅看原创</label>
+<button id="applyBtn" class="primary wide">筛选文章</button><button id="saveBtn" class="wide">保存为方案</button>
+<p class="footnote">筛选作用于本机文章库。日期按文章发布时间计算，包含起止当天。</p>
+</aside>
+<section class="workspace">
+<div class="workspace-heading"><div><p class="eyebrow">文章库</p><h1>把值得看的文章，留下来。</h1><p id="summary">正在读取本机文章库…</p></div><div class="export-actions"><button id="exportSelectedBtn">导出勾选</button><button class="primary" id="exportBtn">导出筛选结果</button></div></div>
+<div class="notice"><strong>采集说明</strong><span>历史表格可直接导入。已支持公众号公开合集批量收集，也可粘贴文章链接。仅覆盖你配置的合集内容，不保证公众号全部历史。</span></div>
+<div id="status" class="status" role="status" aria-live="polite" hidden></div>
+<div class="result-bar"><span id="resultCount">文章列表</span><span id="selectedCount" class="hint"></span><span class="hint">按发布时间倒序</span></div>
+<div class="table-wrap"><table><thead><tr><th class="checkbox-cell"><input type="checkbox" id="selectPage" aria-label="勾选当前页"></th><th>标题 / 公众号</th><th class="date-cell">发布时间</th><th class="author-cell">作者</th><th class="original-cell">原创</th><th class="open-cell">操作</th></tr></thead><tbody id="rows"></tbody></table><div id="empty" hidden><strong>没有符合条件的文章</strong><p>试试放宽日期、减少关键词，或导入更多文章。</p></div></div>
+<footer class="pagination"><span id="pageInfo"></span><div><button id="prevBtn">上一页</button><button id="nextBtn">下一页</button></div></footer>
+<p class="footnote">导出保留原表的 18 列。缺失数据保持空白；正文过长时 Excel 单元格最多保留 32,767 个字符，完整正文仍留在本机文章库。</p>
+</section></main>
+<dialog id="sourcesDialog"><div class="dialog-title"><h2>管理公众号</h2><button class="close" data-close="sourcesDialog" aria-label="关闭">×</button></div><p>保存公众号后，可在左侧单独筛选。填写该公众号的合集分享链接，即可批量收集合集内文章。</p><div id="sourceList"></div><form id="accountForm"><label for="accountName">公众号名称</label><input id="accountName" required placeholder="输入公众号的准确名称"><label for="feedUrl">合集 / RSS 地址 <span class="hint">可选</span></label><input id="feedUrl" type="url" placeholder="https://mp.weixin.qq.com/mp/appmsgalbum?…"><p class="hint">在微信文章底部点击合集名称，打开合集后复制分享链接。也兼容已有的 RSS/Atom 地址。只填名称无法获取文章。</p><button class="primary" type="submit">保存并收集</button></form><p id="accountMessage" role="status"></p></dialog>
+<dialog id="collectDialog"><div class="dialog-title"><h2>收集文章</h2><button class="close" data-close="collectDialog" aria-label="关闭">×</button></div><div class="tabs"><button id="linksTab" class="active">微信文章链接</button><button id="feedsTab">公众号合集 / RSS</button></div><section id="linksPanel"><p>粘贴文章分享链接，一行一条。每批最多 100 条；已有文章自动去重。</p><label for="articleLinks">文章链接</label><textarea id="articleLinks" rows="6" placeholder="https://mp.weixin.qq.com/s/…"></textarea><p class="hint">微信可能要求人工验证。采集失败会列出原因；可在浏览器正常打开文章后保存网页，再通过“导入表格 / 网页”导入。</p></section><section id="feedsPanel" hidden><p>批量收集左侧勾选公众号的合集 / RSS；未勾选时更新全部来源。按页收集列表后，用左侧日期和关键词筛选。合集列表不包含正文、点赞等数据，这些字段会留空。</p><div id="feedState"></div></section><button id="runCollect" class="primary wide">开始收集</button><div id="jobMessage" class="job-message" role="status" aria-live="polite"></div></dialog>
+<dialog id="saveDialog"><form id="presetForm"><div class="dialog-title"><h2>保存筛选方案</h2><button type="button" class="close" data-close="saveDialog" aria-label="关闭">×</button></div><label for="presetName">方案名称</label><input id="presetName" required maxlength="80" placeholder="例如：即插即用模块"><p class="hint">保存公众号、日期和关键词。同名方案会更新为当前条件。</p><button class="primary wide" type="submit">保存方案</button></form></dialog>
+<dialog id="detailDialog"><div class="dialog-title"><h2>文章详情</h2><button class="close" data-close="detailDialog" aria-label="关闭">×</button></div><div id="detail"></div></dialog>
+<input type="file" id="fileInput" accept=".xlsx,.html,.htm" hidden>
+<button id="exitAppBtn" hidden>退出拾文</button>
+</body></html>
